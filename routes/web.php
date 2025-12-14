@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\Auth\CompanyRegisterController;
+
 
 Route::get('/', function () {
     return view('home');
@@ -46,6 +48,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', fn() => view('admin.dashboard'));
     Route::resource('/admin/companies', App\Http\Controllers\Admin\CompanyController::class);
     Route::resource('/admin/alumni', App\Http\Controllers\Admin\AlumniController::class);
+});
+
+
+Route::middleware('guest')->group(function () {
+    
+    // 1. Route untuk Menampilkan Form (GET)
+    Route::get('register-company', [CompanyRegisterController::class, 'create'])
+        ->name('register.company');
+
+    // 2. Route untuk Proses Submit Form (POST)
+    Route::post('register-company', [CompanyRegisterController::class, 'store'])
+        ->name('register.company.store');
+
+    // ... route login/register user biasa yang sudah ada ...
 });
 
 Route::middleware(['auth'])->group(function () {

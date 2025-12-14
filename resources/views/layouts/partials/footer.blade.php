@@ -147,6 +147,19 @@
         50% { transform: scale(1.2); }
     }
 
+    /* Styling Logout khusus agar sedikit berbeda (Opsional) */
+    .logout-link {
+        color: #fca5a5 !important; /* Warna merah muda lembut */
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    
+    .logout-link:hover {
+        color: #ef4444 !important; /* Warna merah terang saat hover */
+        transform: translateX(5px);
+    }
+
     /* Social Icons */
     .social {
         display: flex;

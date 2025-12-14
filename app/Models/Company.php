@@ -2,23 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+        'user_id', // <--- Pastikan ini ada!
         'name',
-        'logo',
         'email',
         'phone',
         'website',
         'address',
         'description',
         'industry',
+        'logo',
     ];
 
-    public function jobseeks()
+    // Relasi ke User (Opsional tapi disarankan)
+    public function user()
     {
-        return $this->hasMany(Jobseek::class);
+        return $this->belongsTo(User::class);
     }
 }

@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->role === 'alumni';
     }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
 }

@@ -14,11 +14,6 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -26,11 +21,6 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'two_factor_secret',
@@ -38,11 +28,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -51,9 +36,6 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the user's initials
-     */
     public function initials(): string
     {
         return Str::of($this->name)
@@ -63,6 +45,7 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    // --- ROLE CHECKERS ---
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -78,8 +61,20 @@ class User extends Authenticatable
         return $this->role === 'alumni';
     }
 
+
     public function company()
     {
         return $this->hasOne(Company::class);
+    }
+
+    public function alumni()
+    {
+        // Relasi one-to-one ke tabel alumni
+        return $this->hasOne(Alumni::class);
+    }
+
+    public function getCompanyIdAttribute()
+    {
+        return $this->company ? $this->company->id : null;
     }
 }

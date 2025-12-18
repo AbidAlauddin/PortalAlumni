@@ -26,33 +26,30 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 1. Tambahkan Kode ini: Binding Custom Register Response
+        $this->app->singleton(
+            \Laravel\Fortify\Contracts\RegisterResponse::class,
+            \App\Http\Responses\RegisterResponse::class
+        );
+
+        // (Opsional) Jika ingin login juga redirectnya dinamis, tambahkan LoginResponse
+        // $this->app->singleton(
+        //     \Laravel\Fortify\Contracts\LoginResponse::class,
+        //     \App\Http\Responses\LoginResponse::class
+        // );
+
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
 
+        // Logic authenticateUsing ini HANYA untuk LOGIN, tidak berpengaruh ke Register
         Fortify::authenticateUsing(function (Request $request) {
-
             $credentials = $request->only('email', 'password');
 
             if (! auth()->attempt($credentials)) {
                 return null;
             }
-
-            $user = auth()->user();
-
-            // Tentukan redirect berdasarkan role
-            if ($user->role === 'admin') {
-                session(['url.intended' => '/admin/dashboard']);
-            } 
-            elseif ($user->role === 'company') {
-                session(['url.intended' => '/company/dashboard']);
-            } 
-            else {
-                // alumni (default)
-                session(['url.intended' => '/home']);
-            }
-
-            return $user;
+            return auth()->user();
         });
     }
 

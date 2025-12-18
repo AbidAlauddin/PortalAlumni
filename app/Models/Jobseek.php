@@ -2,33 +2,61 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Jobseek extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'company_id',
+        'user_id',
         'title',
-        'type',
+        'description',
         'location',
+        'job_type',
+        'work_system',
         'salary_min',
         'salary_max',
-        'description',
-        'requirement',
-        'responsibilities',
-        'category',
-        'major_preference',
-        'is_active',
+        'experience_level',
+        'education_level',
+        'quota',
+        'status',
         'deadline',
     ];
 
-    public function company()
+    // ENUM STATUS
+    public const STATUS_OPEN = 'open';
+    public const STATUS_CLOSED = 'closed';
+    public const STATUS_EXPIRED = 'expired';
+
+    public static function statuses(): array
     {
-        return $this->belongsTo(Company::class);
+        return [
+            self::STATUS_OPEN,
+            self::STATUS_CLOSED,
+            self::STATUS_EXPIRED,
+        ];
     }
 
-    public function matching()
+    // Relasi ke User
+    public function user()
     {
-        return $this->hasMany(MatchingJob::class);
+        return $this->belongsTo(User::class);
+    }
+
+    // --- BAGIAN INI YANG DIPERBAIKI ---
+    public function company()
+    {
+        // Kita definisikan manual kuncinya agar Laravel menghubungkan via 'user_id'
+        // Parameter 2 ('user_id'): Kolom foreign key di tabel ini (jobseeks)
+        // Parameter 3 ('user_id'): Kolom pemilik di tabel target (companies)
+        return $this->belongsTo(Company::class, 'user_id', 'user_id');
+    }
+    // ----------------------------------
+
+    public function applications()
+    {
+        return $this->hasMany(JobVacancy::class);
     }
 }
